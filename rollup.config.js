@@ -4,8 +4,16 @@
 
 import babel from 'rollup-plugin-babel'
 import uglify from 'rollup-plugin-uglify'
+import resolve from 'rollup-plugin-node-resolve'
 
-const plugins = [babel()]
+const plugins = [
+  resolve({
+    customResolveOptions: {
+      moduleDirectory: 'node_modules'
+    }
+  }),
+  babel(),
+]
 if (process.env.NODE_ENV === 'production') plugins.push(uglify())
 
 export default ({
