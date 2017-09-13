@@ -1,0 +1,34 @@
+{
+  "name": "bnuz-dorm-spider",
+  "version": "0.0.1",
+  "description": "A dormitory information crawler program using nodejs. ",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "cross-env NODE_ENV=dev rollup -c --watch",
+    "build": "cross-env NODE_ENV=production rollup -c"
+  },
+  "keywords": [
+    "nodejs",
+    "mongodb",
+    "spider",
+    "bnuz"
+  ],
+  "author": "MorenYANG <yangteng@me.com>",
+  "license": "GPL-3.0",
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.2",
+    "request": "^2.81.0",
+    "request-promise": "^4.2.1"
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-plugin-external-helpers": "^6.22.0",
+    "babel-preset-es2015": "^6.24.1",
+    "cross-env": "^5.0.5",
+    "rollup": "^0.49.3",
+    "rollup-plugin-babel": "^3.0.2",
+    "rollup-plugin-uglify": "^2.0.1",
+    "rollup-watch": "^4.3.1"
+  }
+}
