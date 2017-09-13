@@ -1,7 +1,7 @@
 /**
  * Created by MorenYang on 2017/9/13.
  */
-import mongoose from 'mongoose'
+const mongoose = require('mongoose')
 
 mongoose.Promise = require('bluebird');
 
@@ -21,4 +21,3 @@ const dormSchema = new mongoose.Schema({
 });
 
 export const Dorm = mongoose.model('Dorm', dormSchema);
-export default Dorm;

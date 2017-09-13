@@ -9,19 +9,19 @@ export const fetchDorm = ({id}) => {
   const API = `${DORM_API}${id}`;
   let options = {
     method: 'GET',
-    uir: API
+    uri: API
   };
 
   return request(options)
     .then(res => {
       if (!res) {
-        return {status: false, message: 'network error', errCode: 103}
+        return {status: false, message: 'network error', errCode: 101}
       }
       if (res.statusCode === 200) {
         if (res.body.indexOf('学校主页') > 0) {
-          return {status: false, message: 'auth error', errCode: 101}
-        } else if (res.body || res.body.length === 0) {
-          return {status: false, message: 'no data', errCode: 201}
+          return {status: false, message: 'auth error', errCode: 201}
+        } else if (!res.body || res.body.length === 0) {
+          return {status: false, message: 'no data', errCode: 202}
         } else {
           return {status: true, body: res.body}
         }

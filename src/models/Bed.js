@@ -26,7 +26,7 @@ const bedSchema = new mongoose.Schema({
       type: Number
     },
     major: {
-      type: Number
+      type: String
     }
   },
   dorm: {
