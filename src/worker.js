@@ -14,7 +14,8 @@ const main = async () => {
   await loginModule().then(res => {
     _loginStatus = res.status
   });
-  for (let id = config.idStart; id <= config.idEnd;id++) {
+  let currentId = config.idStart;
+  for (; currentId <= config.idEnd; currentId++) {
     if (!_loginStatus) {
       await loginModule().then(res => {
         _loginStatus = res.status;
@@ -23,12 +24,14 @@ const main = async () => {
     }
 
     let _dorm, _bedList;
-    const _res = await fetchModule({id}).then(res => {
+    const _res = await fetchModule({id: currentId}).then(res => {
       if (res.status) {
         return dormParser(res.body)
       } else if (res.errCode === 202) {
+        console.log(`${currentId} blank`)
         return false
       } else if (res.errCode === 201) {
+        currentId--;
         _loginStatus = false;
         return false
       } else {
@@ -43,7 +46,7 @@ const main = async () => {
     _bedList = _res.bedList;
     let dorm = await saveDorm({dorm: _dorm});
     for (let i = 0; i < _bedList.length; i++) {
-      console.log(`${id} ${_bedList[i].building} ${_bedList[i].dormNumber} ${_bedList[i].bedNumber} ${_bedList[i].student.name}`);
+      console.log(`${currentId} ${_bedList[i].building} ${_bedList[i].dormNumber} ${_bedList[i].bedNumber} ${_bedList[i].student.name}`);
       saveBed({dorm, bed: _bedList[i]})
     }
   }
@@ -86,12 +89,33 @@ const saveDorm = ({dorm}) =>
 
 const saveBed = ({dorm, bed}) =>
   new Promise((resolve, reject) => {
-    console.log(`saving ${bed}`)
-    bed.dorm = dorm.ObjectId;
+    bed.dorm = dorm;
     let _bed = new Bed(bed);
-    _bed.save((err, res) => {
-      if (err) reject(err);
-      resolve(res)
+    bedPreSave(_bed).then(() => {
+      _bed.save((err, res) => {
+        if (err) reject(err);
+        resolve(res)
+      })
+    })
+  });
+
+const bedPreSave = (bed) =>
+  new Promise((resolve, reject) => {
+    Bed.findOne({
+      building: bed.building,
+      dormNumber: bed.dormNumber,
+      bedNumber: bed.bedNumber
+    }, (err, res) => {
+      if (err) console.log(err);
+      if (res) res.remove((err, res) => {
+        if (err) {
+          console.log(err);
+          reject(err)
+        } else {
+          resolve()
+        }
+      });
+      else resolve()
     })
   });
 

@@ -23,7 +23,7 @@ const bedObject = {
       type: Number
     },
     college: {
-      type: Number
+      type: String
     },
     major: {
       type: String
@@ -37,24 +37,6 @@ const bedObject = {
 };
 
 const bedSchema = new mongoose.Schema(bedObject);
-
-bedSchema.pre('save', function (next) {
-  this.findOne({
-    building: this.building,
-    dormNumber: this.dormNumber,
-    bedNumber: this.bedNumber
-  }, (err, res) => {
-    if (err) console.log(err);
-    if (res) res.remove((err, res) => {
-      if (err) {
-        console.log(err);
-      } else {
-        next()
-      }
-    });
-    else next()
-  })
-});
 
 export const Bed = mongoose.model('Bed', bedSchema);
 export default Bed

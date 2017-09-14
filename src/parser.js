@@ -11,7 +11,7 @@ export const dormParser = function (body) {
   const _beds = $('.table1[cellspacing]');
 
   // dorm parser
-  console.log(parseInt($($(_dorm).find('td')[7]).text().replace(/[\S]+：/g, '')));
+  // console.log(parseInt($($(_dorm).find('td')[7]).text().replace(/[\S]+：/g, '')));
   let dorm = {
     building: $($(_dorm).find('td')[1]).text().replace(/[\S]+：/g, '').textFormat(),
     dormNumber: $($(_dorm).find('td')[2]).text().replace(/[\S]+：/g, ''),
@@ -34,6 +34,7 @@ export const dormParser = function (body) {
         major: $($(el).find('td')[6]).text()
       }
     };
+    // console.log(_bed);
     if (!!_bed.student.name.length)
       bedList.push(_bed);
   });
