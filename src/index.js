@@ -9,4 +9,34 @@ const mongoose = require('mongoose');
 mongoose.connect(config.dbPath, {useMongoClient: true});
 mongoose.Promise = require('bluebird');
 
-worker();
+const WORKER_STEP = 100;
+
+let freeWorker = config.maxWorkerNumber;
+let currentStart = config.idStart;
+
+if (config.idEnd - config.idStart < WORKER_STEP) {
+  worker()
+} else {
+  init()
+}
+
+function init() {
+  if (freeWorker > 0) {
+    freeWorker--;
+    workerInit();
+    init();
+  }
+}
+
+function workerInit() {
+  if (currentStart <= config.idEnd) {
+    worker(currentStart, currentStart + WORKER_STEP - 1)
+      .then(() => {
+        freeWorker++;
+        init();
+      });
+    currentStart += WORKER_STEP;
+  }
+}
+
+

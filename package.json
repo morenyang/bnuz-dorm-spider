@@ -1,6 +1,6 @@
 {
   "name": "bnuz-dorm-spider",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "A dormitory information crawler program using nodejs. ",
   "main": "src/index.js",
   "scripts": {

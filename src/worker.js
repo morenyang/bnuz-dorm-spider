@@ -8,6 +8,7 @@ import {dormParser} from "./parser";
 import Bed from './models/Bed'
 import Dorm from './models/Dorm'
 import config from './config'
+import Store from './store'
 
 const main = async (arg1, arg2) => {
   let {idStart, idEnd} = config;
@@ -20,17 +21,19 @@ const main = async (arg1, arg2) => {
       idEnd = arg1.idEnd
     }
   }
-  console.log(idStart, idEnd)
-  let _loginStatus = false;
-  await loginModule().then(res => {
-    _loginStatus = res.status
-  });
+  console.log(`worker ${idStart} - ${idEnd}`);
+  if (!Store.loginStatus) {
+
+    await loginModule().then(res => {
+      Store.loginStatus = res.status
+    });
+  }
   let currentId = idStart;
   for (; currentId <= idEnd; currentId++) {
-    if (!_loginStatus) {
+    if (!Store.loginStatus) {
       currentId--;
       await loginModule().then(res => {
-        _loginStatus = res.status;
+        Store.loginStatus = res.status;
       });
       continue;
     }
@@ -45,7 +48,7 @@ const main = async (arg1, arg2) => {
           return false
         } else if (res.errCode === 201) {
           currentId--;
-          _loginStatus = false;
+          Store.loginStatus = false;
           return false
         } else {
           console.log(res.message);
@@ -76,6 +79,9 @@ const main = async (arg1, arg2) => {
       }
     }
   }
+  return new Promise((resolve, reject) => {
+    resolve(true)
+  })
 };
 
 

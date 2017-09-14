@@ -11,5 +11,7 @@ export default {
   idEnd: 999999,
 
   dbPath: '',
-  proxy: ''
+  proxy: '',
+
+  maxWorkerNumber: 1
 }
