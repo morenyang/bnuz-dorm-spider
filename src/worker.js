@@ -9,17 +9,18 @@ import Bed from './models/Bed'
 import Dorm from './models/Dorm'
 import config from './config'
 
-const main = async () => {
+const main = async (arg1, arg2) => {
   let {idStart, idEnd} = config;
-  if (arguments.length > 0) {
-    if (typeof (arguments[0]) === 'number') {
-      idStart = arguments[0];
-      idEnd = arguments[1]
+  if (!!arg1) {
+    if (typeof (arg1) === 'number') {
+      idStart = arg1;
+      idEnd = arg2
     } else {
-      idStart = arguments[0].idStart;
-      idEnd = arguments[0].idEnd
+      idStart = arg1.idStart;
+      idEnd = arg1.idEnd
     }
   }
+  console.log(idStart, idEnd)
   let _loginStatus = false;
   await loginModule().then(res => {
     _loginStatus = res.status

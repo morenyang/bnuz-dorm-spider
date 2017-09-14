@@ -7,5 +7,6 @@ import worker from './worker'
 
 const mongoose = require('mongoose');
 mongoose.connect(config.dbPath, {useMongoClient: true});
+mongoose.Promise = require('bluebird');
 
 worker();
