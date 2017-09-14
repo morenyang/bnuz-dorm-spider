@@ -5,6 +5,7 @@
 import babel from 'rollup-plugin-babel'
 import uglify from 'rollup-plugin-uglify'
 import resolve from 'rollup-plugin-node-resolve'
+import {minify} from 'uglify-es';
 
 const plugins = [
   resolve({
@@ -14,7 +15,7 @@ const plugins = [
   }),
   babel(),
 ]
-if (process.env.NODE_ENV === 'production') plugins.push(uglify())
+if (process.env.NODE_ENV === 'production') plugins.push(uglify({}, minify))
 
 export default ({
   input: 'src/index.js',

@@ -20,4 +20,11 @@ const dormSchema = new mongoose.Schema({
   }
 });
 
-export const Dorm = mongoose.model('Dorm', dormSchema);
+class dormClass {
+  static findDorm({building, dormNumber}) {
+    return this.findOne({building, dormNumber})
+  }
+}
+
+dormSchema.loadClass(dormClass);
+export default mongoose.model('Dorm', dormSchema);
