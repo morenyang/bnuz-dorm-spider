@@ -3,8 +3,6 @@
  */
 const mongoose = require('mongoose')
 
-mongoose.Promise = require('bluebird');
-
 const dormSchema = new mongoose.Schema({
   building: {
     type: String

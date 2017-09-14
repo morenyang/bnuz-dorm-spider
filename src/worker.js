@@ -10,44 +10,69 @@ import Dorm from './models/Dorm'
 import config from './config'
 
 const main = async () => {
+  let {idStart, idEnd} = config;
+  if (arguments.length > 0) {
+    if (typeof (arguments[0]) === 'number') {
+      idStart = arguments[0];
+      idEnd = arguments[1]
+    } else {
+      idStart = arguments[0].idStart;
+      idEnd = arguments[0].idEnd
+    }
+  }
   let _loginStatus = false;
   await loginModule().then(res => {
     _loginStatus = res.status
   });
-  let currentId = config.idStart;
-  for (; currentId <= config.idEnd; currentId++) {
+  let currentId = idStart;
+  for (; currentId <= idEnd; currentId++) {
     if (!_loginStatus) {
+      currentId--;
       await loginModule().then(res => {
         _loginStatus = res.status;
       });
       continue;
     }
 
-    let _dorm, _bedList;
-    const _res = await fetchModule({id: currentId}).then(res => {
-      if (res.status) {
-        return dormParser(res.body)
-      } else if (res.errCode === 202) {
-        console.log(`${currentId} blank`)
-        return false
-      } else if (res.errCode === 201) {
-        currentId--;
-        _loginStatus = false;
-        return false
-      } else {
-        console.log(res.message);
-        return false
-      }
-    });
+    let _dorm, _bedList, _res;
+    try {
+      _res = await fetchModule({id: currentId}).then(res => {
+        if (res.status) {
+          return dormParser(res.body)
+        } else if (res.errCode === 202) {
+          console.log(`${currentId} blank`)
+          return false
+        } else if (res.errCode === 201) {
+          currentId--;
+          _loginStatus = false;
+          return false
+        } else {
+          console.log(res.message);
+          return false
+        }
+      });
+    } catch (err) {
+      console.log(err)
+    }
+
     if (!_res) {
       continue;
     }
     _dorm = _res.dorm;
     _bedList = _res.bedList;
-    let dorm = await saveDorm({dorm: _dorm});
+    let dorm;
+    try {
+      dorm = await saveDorm({dorm: _dorm});
+    } catch (err) {
+      console.log(err)
+    }
     for (let i = 0; i < _bedList.length; i++) {
       console.log(`${currentId} ${_bedList[i].building} ${_bedList[i].dormNumber} ${_bedList[i].bedNumber} ${_bedList[i].student.name}`);
-      saveBed({dorm, bed: _bedList[i]})
+      try {
+        await saveBed({dorm, bed: _bedList[i]})
+      } catch (err) {
+        console.log(err)
+      }
     }
   }
 };
@@ -69,7 +94,7 @@ const fetchModule = ({id}) =>
 
 const saveDorm = ({dorm}) =>
   new Promise((resolve, reject) => {
-    let dormInDB = undefined;
+    let dormInDB;
     Dorm.findOne({building: dorm.building, dormNumber: dorm.dormNumber}, (err, res) => {
       if (err) {
         console.log(err);
