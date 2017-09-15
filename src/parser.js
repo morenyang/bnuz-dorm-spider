@@ -16,7 +16,6 @@ export const dormParser = function (body) {
     building: $($(_dorm).find('td')[1]).text().replace(/[\S]+：/g, '').textFormat(),
     dormNumber: $($(_dorm).find('td')[2]).text().replace(/[\S]+：/g, ''),
     dormType: $($(_dorm).find('td')[4]).text().replace(/[\S]+：/g, '').textFormat(),
-    price: parseInt($($(_dorm).find('td')[7]).text().replace(/[\S]+：/g, ''))
   };
 
   let bedList = [];
@@ -27,16 +26,17 @@ export const dormParser = function (body) {
       building: $($(el).find('td')[0]).text(),
       dormNumber: $($(el).find('td')[1]).text(),
       bedNumber: $($(el).find('td')[2]).text(),
+      dormType: dorm.dormType,
       student: {
-        name: $($(el).find('td')[3]).text(),
+        name: $($(el).find('td')[3]).text().textFormat(),
         grade: parseInt($($(el).find('td')[4]).text()),
         college: $($(el).find('td')[5]).text(),
         major: $($(el).find('td')[6]).text()
       }
     };
     // console.log(_bed);
-    if (!!_bed.student.name.length)
-      bedList.push(_bed);
+    //if (!!_bed.student.name.length)
+    bedList.push(_bed);
   });
   return {dorm, bedList}
 };

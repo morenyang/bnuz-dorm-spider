@@ -5,16 +5,15 @@ const mongoose = require('mongoose')
 
 const dormSchema = new mongoose.Schema({
   building: {
-    type: String
+    type: String,
+    required: true
   },
   dormNumber: {
-    type: String
+    type: String,
+    required:true
   },
   dormType: {
     type: String
-  },
-  price: {
-    type: Number
   }
 });
 

@@ -3,7 +3,7 @@
  */
 
 import config from './config'
-import worker from './worker'
+import worker, {loginModule} from './worker'
 
 const mongoose = require('mongoose');
 mongoose.connect(config.dbPath, {useMongoClient: true});
@@ -14,10 +14,13 @@ const WORKER_STEP = 100;
 let freeWorker = config.maxWorkerNumber;
 let currentStart = config.idStart;
 
-if (config.idEnd - config.idStart < WORKER_STEP) {
-  worker()
-} else {
-  init()
+async function main() {
+  await loginModule();
+  if (config.idEnd - config.idStart < WORKER_STEP) {
+    worker()
+  } else {
+    init()
+  }
 }
 
 function init() {
@@ -39,4 +42,4 @@ function workerInit() {
   }
 }
 
-
+main();

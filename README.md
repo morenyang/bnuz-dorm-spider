@@ -3,7 +3,7 @@
 A crawler script used to fetch students' dormitory information of BNUZ. 
 
 ## Installation
-You should install node.js and mongodb first.
+You should install **node.js7+** and mongodb first.
 
 ```bash
 # Clone this repo

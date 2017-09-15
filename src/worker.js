@@ -10,7 +10,7 @@ import Dorm from './models/Dorm'
 import config from './config'
 import Store from './store'
 
-const main = async (arg1, arg2) => {
+export const main = async (arg1, arg2) => {
   let {idStart, idEnd} = config;
   if (!!arg1) {
     if (typeof (arg1) === 'number') {
@@ -23,17 +23,20 @@ const main = async (arg1, arg2) => {
   }
   console.log(`worker ${idStart} - ${idEnd}`);
   if (!Store.loginStatus) {
-
-    await loginModule().then(res => {
-      Store.loginStatus = res.status
-    });
+    try {
+      await loginModule().then(res => {
+        Store.loginStatus = !!res.status
+      });
+    } catch (err) {
+      console.log(err)
+    }
   }
   let currentId = idStart;
   for (; currentId <= idEnd; currentId++) {
     if (!Store.loginStatus) {
       currentId--;
       await loginModule().then(res => {
-        Store.loginStatus = res.status;
+        Store.loginStatus = !!res.status;
       });
       continue;
     }
@@ -44,7 +47,7 @@ const main = async (arg1, arg2) => {
         if (res.status) {
           return dormParser(res.body)
         } else if (res.errCode === 202) {
-          console.log(`${currentId} blank`)
+          console.log(`${currentId} blank`);
           return false
         } else if (res.errCode === 201) {
           currentId--;
@@ -73,7 +76,7 @@ const main = async (arg1, arg2) => {
     for (let i = 0; i < _bedList.length; i++) {
       console.log(`${currentId} ${_bedList[i].building} ${_bedList[i].dormNumber} ${_bedList[i].bedNumber} ${_bedList[i].student.name}`);
       try {
-        await saveBed({dorm, bed: _bedList[i]})
+        await saveBed({bed: _bedList[i]})
       } catch (err) {
         console.log(err)
       }
@@ -85,7 +88,7 @@ const main = async (arg1, arg2) => {
 };
 
 
-const loginModule = () =>
+export const loginModule = () =>
   login({
     username: config.username,
     password: config.password
@@ -119,15 +122,18 @@ const saveDorm = ({dorm}) =>
     });
   });
 
-const saveBed = ({dorm, bed}) =>
+const saveBed = ({bed}) =>
   new Promise((resolve, reject) => {
-    bed.dorm = dorm;
     let _bed = new Bed(bed);
     bedPreSave(_bed).then(() => {
-      _bed.save((err, res) => {
-        if (err) reject(err);
-        resolve(res)
-      })
+      if (!!bed.student.name.length)
+        _bed.save((err, res) => {
+          if (err) reject(err);
+          resolve(res)
+        });
+      else {
+        resolve(null);
+      }
     })
   });
 

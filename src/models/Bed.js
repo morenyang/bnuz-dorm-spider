@@ -5,14 +5,19 @@ const mongoose = require('mongoose')
 
 const bedObject = {
   building: {
-    type: String
+    type: String,
+    required: true
   },
   dormNumber: {
-    type: String
+    type: String,
+    required: true
   },
   bedNumber: {
     type: String,
     required: true,
+  },
+  dormType: {
+    type: String
   },
   student: {
     name: {
@@ -28,11 +33,6 @@ const bedObject = {
     major: {
       type: String
     }
-  },
-  dorm: {
-    type: mongoose.Schema.ObjectId,
-    required: true,
-    ref: 'Dorm'
   }
 };
 
