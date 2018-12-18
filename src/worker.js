@@ -40,7 +40,7 @@ export const main = async (arg1, arg2) => {
       });
       continue;
     }
-    await breaking();
+    await sleep(config.delay);
     let _dorm, _bedList, _res;
     try {
       _res = await fetchModule({id: currentId}).then(res => {
@@ -99,9 +99,7 @@ export const loginModule = () =>
     return res
   });
 
-const breaking = () =>{
-  return new Promise(resolve => setTimeout(resolve, 1500));
-}
+const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
 const fetchModule = ({id}) =>
   fetchDorm({id});

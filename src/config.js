@@ -13,5 +13,6 @@ export default {
   dbPath: '',
   proxy: '',
 
-  maxWorkerNumber: 1
+  maxWorkerNumber: 1,
+  delay: 1500
 }
